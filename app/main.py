@@ -7,6 +7,9 @@ from sqlalchemy import text
 
 from app.config import get_settings
 from app.database import engine
+from app.routers import admin_stores as admin_stores_router
+from app.routers import auth as auth_router
+from app.routers import search as search_router
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +44,14 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+    app.include_router(auth_router.router, prefix="/api/auth", tags=["auth"])
+    app.include_router(search_router.router, prefix="/api/stores", tags=["search"])
+    app.include_router(
+        admin_stores_router.router,
+        prefix="/api/admin/stores",
+        tags=["admin-stores"],
     )
 
     @app.get("/health", tags=["health"])
