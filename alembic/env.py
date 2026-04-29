@@ -6,10 +6,7 @@ from alembic import context
 
 from app.config import get_settings
 from app.database import Base
-
-# When models are added in Phase 2, import them here so Alembic autogenerate
-# can detect schema changes:
-# from app.models import store, user, role, token  # noqa: F401
+from app import models  # noqa: F401  -- registers all ORM classes with Base.metadata
 
 config = context.config
 
