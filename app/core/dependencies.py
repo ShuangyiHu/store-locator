@@ -9,8 +9,7 @@ from app.core import security
 from app.database import get_db
 from app.models.user import User, UserStatus
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=True)
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login/swagger")
 
 _CREDENTIALS_EXC = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,

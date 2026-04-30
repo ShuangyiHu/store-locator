@@ -32,6 +32,25 @@ services:
       timeout: 3s
       retries: 5
 
+  api:
+    build: .
+    container_name: store-locator-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/store_locator
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET_KEY: dev-secret-key-do-not-use-in-production-32chars
+      NOMINATIM_USER_AGENT: store-locator-api/1.0 (dev)
+      ENVIRONMENT: development
+      CORS_ORIGINS: '["*"]'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
