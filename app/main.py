@@ -6,8 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.config import get_settings
+from app.core.cache import ping as cache_ping
 from app.database import engine
 from app.routers import admin_stores as admin_stores_router
+from app.routers import admin_users as admin_users_router
 from app.routers import auth as auth_router
 from app.routers import search as search_router
 
@@ -53,6 +55,11 @@ def create_app() -> FastAPI:
         prefix="/api/admin/stores",
         tags=["admin-stores"],
     )
+    app.include_router(
+        admin_users_router.router,
+        prefix="/api/admin/users",
+        tags=["admin-users"],
+    )
 
     @app.get("/health", tags=["health"])
     def health_check():
@@ -62,9 +69,11 @@ def create_app() -> FastAPI:
                 conn.execute(text("SELECT 1"))
         except Exception:
             db_ok = False
+        cache_ok = cache_ping()
         return {
-            "status": "ok" if db_ok else "degraded",
+            "status": "ok" if (db_ok and cache_ok) else "degraded",
             "db": "connected" if db_ok else "disconnected",
+            "cache": "connected" if cache_ok else "disconnected",
         }
 
     return app

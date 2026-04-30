@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.rate_limiter import public_rate_limit
 from app.database import get_db
 from app.schemas.store import SearchRequest, SearchResponse
 from app.services import store_service
@@ -10,7 +11,11 @@ from app.services import store_service
 router = APIRouter()
 
 
-@router.post("/search", response_model=SearchResponse)
+@router.post(
+    "/search",
+    response_model=SearchResponse,
+    dependencies=[Depends(public_rate_limit)],
+)
 def search_stores(
     payload: SearchRequest,
     db: Session = Depends(get_db),

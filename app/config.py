@@ -30,6 +30,7 @@ class Settings(BaseSettings):
 
     rate_limit_per_hour: int = 100
     rate_limit_per_minute: int = 10
+    rate_limit_enabled: bool = True
 
     search_cache_ttl_seconds: int = 300
     default_radius_miles: float = 10.0
